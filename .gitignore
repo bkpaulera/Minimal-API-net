@@ -50,3 +50,10 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+Minimal-API-net/.vs/Minimal-API-net/FileContentIndex/d7bd05ad-3628-4a86-a69b-37968c726b1c.vsidx
+Minimal-API-net/Applications/obj/Applications.csproj.nuget.dgspec.json
+Minimal-API-net/Applications/obj/Applications.csproj.nuget.g.props
+Minimal-API-net/Applications/obj/Applications.csproj.nuget.g.targets
+Minimal-API-net/Applications/obj/Debug/net7.0/Applications.assets.cache
+Minimal-API-net/Applications/obj/project.assets.json
+Minimal-API-net/Applications/obj/project.nuget.cache
