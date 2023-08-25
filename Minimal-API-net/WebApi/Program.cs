@@ -2,6 +2,8 @@
 using Domain.Auth.Interfaces.Repository;
 using Infra.Data;
 using Infra.Repository.Auth;
+using WebApi.Applications.Auth;
+using WebApi.Domain.Auth.Interfaces.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +15,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<AppDbContext>();
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 
 var app = builder.Build();

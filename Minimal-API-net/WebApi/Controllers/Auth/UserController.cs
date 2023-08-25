@@ -1,5 +1,10 @@
-﻿using Domain.Auth.Interfaces.Repository;
+﻿using Domain.Auth;
+using Domain.Auth.Interfaces.Repository;
 using Microsoft.AspNetCore.Mvc;
+using WebApi.Applications.Auth;
+using WebApi.Domain.Auth.Interfaces.Service;
+using WebApi.Domain.Request;
+using WebApi.Domain.Response;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -10,17 +15,18 @@ namespace WebApi.Controllers.Auth
     public class UserController : ControllerBase
     {
 
-        private readonly IUsersRepository _usersRepository;
-        public UserController(IUsersRepository usersRepository)
+        private readonly IUserService _userService;
+
+        public UserController(IUserService userService)
         {
-            _usersRepository = usersRepository;
+            _userService = userService;
         }
 
         // GET: api/<UuserController>
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var result = await _usersRepository.GetAll();
+            var result = await _userService.GetAll();
 
             return Ok(result);
         }
@@ -34,8 +40,12 @@ namespace WebApi.Controllers.Auth
 
         // POST api/<UuserController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<ActionResult<UserResponse>> PostAsync([FromBody] UserRequest request)
         {
+
+            var result = await _userService.CreateUser(request);
+
+            return Ok(result);
         }
 
         // PUT api/<UuserController>/5

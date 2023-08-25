@@ -8,7 +8,7 @@ namespace Domain.Auth.Interfaces.Repository
 {
     public interface IUsersRepository
     {
-        void Add(Users users);
+        Users Add(Users users);
 
         public Task<IEnumerable<Users>> GetAll();
     }

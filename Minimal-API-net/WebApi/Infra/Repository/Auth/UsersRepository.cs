@@ -18,9 +18,29 @@ namespace Infra.Repository.Auth
 
         public UsersRepository(AppDbContext context)=> _context = context;
 
-        public void Add(Users users)
+        public Users Add(Users users)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var query = "INSERT INTO [dbo].[USER] (Id, Username, Password) VALUES (@Id, @Username, @Password)";
+
+                using (var connection = _context.CreateConnectiosn())
+                {
+                    connection.Open();
+
+                    connection.Execute(query, new
+                    {
+                        users.Id,
+                        users.Username,
+                        users.Password
+                    });
+                    return users;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Ocorreu um erro ao adicionar um usuário. Detalhes: " + ex.Message, ex);
+            }
         }
 
         public async Task<IEnumerable<Users>> GetAll()
@@ -30,18 +50,17 @@ namespace Infra.Repository.Auth
 
                 using (var connection = _context.CreateConnectiosn())
                 {
-                    connection.Open();
+                        connection.Open();
 
-                    var users = await connection.QueryAsync<Users>(query);
-                    return users.ToList();
+                        var users =  await connection.QueryAsync<Users>(query);    
                     
-                }
+                        return users.ToList();
+                 }
             }
             catch(Exception ex)
             {
                 throw new Exception("Ocorreu um erro ao obter usuários. Detalhes: " + ex.Message, ex);
             }
-            return null;
         }
     }
 }
