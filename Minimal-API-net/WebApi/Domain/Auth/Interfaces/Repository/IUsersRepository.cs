@@ -8,8 +8,10 @@ namespace Domain.Auth.Interfaces.Repository
 {
     public interface IUsersRepository
     {
-        Users Add(Users users);
-
+        public Users Add(Users users);
         public Task<IEnumerable<Users>> GetAll();
+        public Task<Users> GetUser(string Username);
+        public Task<bool> PutUserPassword(string id, string newPassword);
+        public void EnsureDatabaseExists();
     }
 }

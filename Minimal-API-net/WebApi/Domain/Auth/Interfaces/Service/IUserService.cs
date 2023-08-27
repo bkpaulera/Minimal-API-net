@@ -8,5 +8,7 @@ namespace WebApi.Domain.Auth.Interfaces.Service
     {
         Task<UserResponse> CreateUser(UserRequest request);
         Task<ActionResult<IEnumerable<UserResponse>>> GetAll();
+        Task<ActionResult<UserResponse>> GetUser(UserRequest request);
+        Task<ActionResult<UserResponse>> PutUserPassword(string id ,string newpassword ,UserRequest request);
     }
 }

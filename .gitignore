@@ -57,3 +57,5 @@ Minimal-API-net/Applications/obj/Applications.csproj.nuget.g.targets
 Minimal-API-net/Applications/obj/Debug/net7.0/Applications.assets.cache
 Minimal-API-net/Applications/obj/project.assets.json
 Minimal-API-net/Applications/obj/project.nuget.cache
+*.vsidx
+*.vsidx

@@ -2,6 +2,7 @@
 using Domain.Auth.Interfaces.Repository;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using WebApi.Domain.Auth.Interfaces.Service;
 using WebApi.Domain.Request;
 using WebApi.Domain.Response;
@@ -12,15 +13,16 @@ namespace WebApi.Applications.Auth
     {
         private readonly IUsersRepository _usersRepository;
 
-        public UserService(IUsersRepository usersRepository) {
+        public UserService(IUsersRepository usersRepository)
+        {
             _usersRepository = usersRepository;
         }
-      
+
         public async Task<UserResponse> CreateUser(UserRequest request)
         {
             // Lógica para criar um usuário, por exemplo
             Users newUser = new Users(Guid.NewGuid(), request.Username, request.Password);
-            
+
             _usersRepository.Add(newUser);
 
             // Montar a resposta
@@ -29,7 +31,7 @@ namespace WebApi.Applications.Auth
                 UserId = newUser.Id,
                 Username = newUser.Username,
                 Password = newUser.Password
-                // Preencha outros campos da resposta conforme necessário
+
             };
 
             return response;
@@ -53,6 +55,58 @@ namespace WebApi.Applications.Auth
             {
                 throw new Exception("Ocorreu um erro ao obter usuários. Detalhes: " + ex.Message, ex);
             }
+        }
+
+        public async Task<ActionResult<UserResponse>> GetUser(UserRequest request)
+        {
+
+            var user = await _usersRepository.GetUser(request.Username);
+
+            if (request.Password == user.Password)
+            {
+                var userResponse = new UserResponse
+                {
+                    UserId = user.Id,
+                    Username = user.Username,
+                    Password = user.Password
+                };
+
+                return userResponse;
+            }
+            else
+            {
+                throw new Exception("Senha ou Usuário não encontrado");
+            }
+        }
+
+        public async Task<ActionResult<UserResponse>> PutUserPassword(string id, string NewPassword, UserRequest request)
+        {
+            //Serch the user in BD
+            var user = await _usersRepository.GetUser(request.Username);
+
+            //Verify if the id is the same that come from the BD
+            if (user.Id.ToString() == id)
+            {
+                //Call the Bd passing the new password
+                if(await _usersRepository.PutUserPassword(id, NewPassword) == true)
+                {
+                    user = await _usersRepository.GetUser(request.Username);
+                }
+
+                var userResponse = new UserResponse
+                {
+                    UserId = user.Id,
+                    Username = user.Username,
+                    Password = user.Password
+                };
+
+                return userResponse;
+            }
+            else
+            {
+                throw new Exception("Senha ou Usuário não encontrado");
+            }
+
         }
     }
 

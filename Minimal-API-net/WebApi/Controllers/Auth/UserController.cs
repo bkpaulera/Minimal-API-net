@@ -1,6 +1,7 @@
 ﻿using Domain.Auth;
 using Domain.Auth.Interfaces.Repository;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using WebApi.Applications.Auth;
 using WebApi.Domain.Auth.Interfaces.Service;
 using WebApi.Domain.Request;
@@ -31,27 +32,55 @@ namespace WebApi.Controllers.Auth
             return Ok(result);
         }
 
-        // GET api/<UuserController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        
+        [HttpGet("get-user")]
+        public async Task<ActionResult<UserResponse>> GetUser([FromBody] UserRequest request)
         {
-            return "value";
+            try
+            {
+                var result = await _userService.GetUser(request);
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Detalhes: " + ex.Message);
+            }
         }
 
         // POST api/<UuserController>
-        [HttpPost]
+        [HttpPost("Post-User")]
         public async Task<ActionResult<UserResponse>> PostAsync([FromBody] UserRequest request)
         {
+            try
+            {
+                var result = await _userService.CreateUser(request);
 
-            var result = await _userService.CreateUser(request);
+                return Ok(result);
 
-            return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Detalhes: " + ex.Message);
+            }
         }
 
         // PUT api/<UuserController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPut("Put-User")]
+        [ProducesResponseType(typeof(UserResponse), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult<UserResponse>> Put(string id, string newpassword, [FromBody] UserRequest request)
         {
+            try
+            {
+                var result = await _userService.PutUserPassword(id,newpassword, request);
+                return Ok(result);
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Detalhes: " + ex.Message);
+            }
+
         }
 
         // DELETE api/<UuserController>/5

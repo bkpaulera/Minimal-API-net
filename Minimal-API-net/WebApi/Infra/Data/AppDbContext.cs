@@ -14,7 +14,8 @@ namespace Infra.Data
         }
 
         //Cria a Conexão com o Bancos
-        public IDbConnection CreateConnectiosn() => new SqlConnection(_connectionString);
+        public IDbConnection CreateConnections() => new SqlConnection(_connectionString);
+
 
         public void Dispose()
         {
