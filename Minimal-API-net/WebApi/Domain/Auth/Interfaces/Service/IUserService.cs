@@ -10,5 +10,6 @@ namespace WebApi.Domain.Auth.Interfaces.Service
         Task<ActionResult<IEnumerable<UserResponse>>> GetAll();
         Task<ActionResult<UserResponse>> GetUser(UserRequest request);
         Task<ActionResult<UserResponse>> PutUserPassword(string id ,string newpassword ,UserRequest request);
+        Task<ActionResult<UserResponse>> DeleteUser(string id, UserRequest request);
     }
 }

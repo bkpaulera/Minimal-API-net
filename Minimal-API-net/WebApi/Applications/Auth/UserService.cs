@@ -97,7 +97,8 @@ namespace WebApi.Applications.Auth
                 {
                     UserId = user.Id,
                     Username = user.Username,
-                    Password = user.Password
+                    Password = user.Password,
+                    Message = "Usuario Atualizado"
                 };
 
                 return userResponse;
@@ -108,6 +109,40 @@ namespace WebApi.Applications.Auth
             }
 
         }
+
+        public async Task<ActionResult<UserResponse>> DeleteUser(string id, UserRequest request)
+        {
+            //Serch the user in BD
+            var user = await _usersRepository.GetUser(request.Username);
+            
+            if (user != null && user.Id.ToString() == id)
+            {
+                //Call the Bd passing the id 
+                if (await _usersRepository.DeleteUser(id))
+                {
+                    return new UserResponse
+                    {
+                        UserId = user.Id,
+                        Username = user.Username,
+                        Message = "Usuario deletado"
+                    };
+
+                }
+                else
+                {
+                    return(new UserResponse
+                    {
+                        Message = "Senha ou Usuário não encontrado."
+                    });
+                }
+            }
+            else
+            {
+                throw new Exception("Senha ou Usuário não encontrado");
+            }
+
+        }
+
     }
 
 }

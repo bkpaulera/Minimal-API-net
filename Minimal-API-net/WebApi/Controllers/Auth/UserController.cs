@@ -1,5 +1,6 @@
 ﻿using Domain.Auth;
 using Domain.Auth.Interfaces.Repository;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using WebApi.Applications.Auth;
@@ -84,9 +85,21 @@ namespace WebApi.Controllers.Auth
         }
 
         // DELETE api/<UuserController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpDelete("Delete-Uuser")]
+        [ProducesResponseType(typeof(UserResponse), (int) HttpStatusCode.OK)]
+        public async Task<ActionResult<UserResponse>>  Delete(string id, [FromBody] UserRequest request)
         {
+            try
+            {
+                var result = await _userService.DeleteUser(id, request);
+                return Ok(result);
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Detalhes: " + ex.Message);
+            }
+
         }
     }
 }

@@ -12,6 +12,7 @@ namespace Domain.Auth.Interfaces.Repository
         public Task<IEnumerable<Users>> GetAll();
         public Task<Users> GetUser(string Username);
         public Task<bool> PutUserPassword(string id, string newPassword);
+        public Task<bool> DeleteUser(string id);
         public void EnsureDatabaseExists();
     }
 }

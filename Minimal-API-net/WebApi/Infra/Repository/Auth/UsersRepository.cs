@@ -136,5 +136,26 @@ namespace Infra.Repository.Auth
                 throw new Exception("Ocorreu um erro ao obter usuários. Detalhes: " + ex.Message, ex);
             }
         }
+
+        public async Task<bool> DeleteUser(string id)
+        {
+            try
+            {
+                var query = "DELETE FROM [dbo].[USER] WHERE id = @id";
+
+                using (var connection = GetConnections())
+                {
+                    connection.Open();
+
+                    int rowsAffected = await connection.ExecuteAsync(query, new { Id = id });
+
+                    return rowsAffected > 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Ocorreu um erro ao obter usuários. Detalhes: " + ex.Message, ex);
+            }
+        }
     }
 }
