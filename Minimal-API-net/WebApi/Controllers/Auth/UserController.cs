@@ -24,13 +24,20 @@ namespace WebApi.Controllers.Auth
             _userService = userService;
         }
 
-        // GET: api/<UuserController>
         [HttpGet]
         public async Task<IActionResult> Get()
-        {
-            var result = await _userService.GetAll();
+        {    
+            try{
 
-            return Ok(result);
+                ActionResult<IEnumerable<UserResponse>> result = await _userService.GetAll();
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Detalhes: " + ex.Message);
+            }
+
         }
 
         

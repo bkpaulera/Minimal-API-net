@@ -1,9 +1,10 @@
-﻿using Domain.Auth;
-using Domain.Auth.Interfaces.Repository;
+﻿using Domain.Auth.Interfaces.Repository;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using WebApi.Domain.Auth.Interfaces.Service;
+using WebApi.Domain.Auth.Models;
 using WebApi.Domain.Request;
 using WebApi.Domain.Response;
 
@@ -12,25 +13,37 @@ namespace WebApi.Applications.Auth
     public class UserService : IUserService
     {
         private readonly IUsersRepository _usersRepository;
+        private readonly ITokenService _tokenService;
 
-        public UserService(IUsersRepository usersRepository)
+        public UserService(IUsersRepository usersRepository, ITokenService tokenService)
         {
             _usersRepository = usersRepository;
+            _tokenService = tokenService;
         }
+
 
         public async Task<UserResponse> CreateUser(UserRequest request)
         {
             // Lógica para criar um usuário, por exemplo
-            Users newUser = new Users(Guid.NewGuid(), request.Username, request.Password);
+            Users newUser = new Users(Guid.NewGuid(), request.Username, request.Password, request.Image,request.Email, request.Roles);
+            
+            //Entitie será usado para persistir os dados no banco
 
-            _usersRepository.Add(newUser);
+            UserEntitie userEntitie = new UserEntitie(newUser.Id, newUser.Username, newUser.Password, newUser.Image,newUser.Email);
+
+            var token = _tokenService.Generate(newUser);
+
+           var create =  await _usersRepository.Add(userEntitie);
 
             // Montar a resposta
-            UserResponse response = new UserResponse
-            {
+            UserResponse response = new UserResponse { 
                 UserId = newUser.Id,
                 Username = newUser.Username,
-                Password = newUser.Password
+                Password = newUser.Password,
+                Email = newUser.Email,
+                Image  = newUser.Image,
+                Roles = null,
+                Message = token,
 
             };
 
@@ -46,7 +59,11 @@ namespace WebApi.Applications.Auth
                 var userResponses = repo.Select(user => new UserResponse
                 {
                     UserId = user.Id,
-                    Username = user.Username
+                    Username = user.Username,
+                    Password = user.Password,
+                    Email = user.Email,
+                    Image = user.Image,
+                    Roles = null,
                 }).ToList();
 
                 return new ActionResult<IEnumerable<UserResponse>>(userResponses);
@@ -68,7 +85,10 @@ namespace WebApi.Applications.Auth
                 {
                     UserId = user.Id,
                     Username = user.Username,
-                    Password = user.Password
+                    Password = user.Password,
+                    Email = user.Email,
+                    Image = user.Image,
+                    Roles = null,
                 };
 
                 return userResponse;
@@ -98,6 +118,9 @@ namespace WebApi.Applications.Auth
                     UserId = user.Id,
                     Username = user.Username,
                     Password = user.Password,
+                    Email = user.Email,
+                    Image = user.Image,
+                    Roles = null,
                     Message = "Usuario Atualizado"
                 };
 
@@ -124,6 +147,10 @@ namespace WebApi.Applications.Auth
                     {
                         UserId = user.Id,
                         Username = user.Username,
+                        Password = user.Password,
+                        Email = user.Email,
+                        Image = user.Image,
+                        Roles = null,
                         Message = "Usuario deletado"
                     };
 
@@ -132,6 +159,9 @@ namespace WebApi.Applications.Auth
                 {
                     return(new UserResponse
                     {
+                        UserId = user.Id,
+                        Email = user.Email,
+                        Username = user.Username,
                         Message = "Senha ou Usuário não encontrado."
                     });
                 }

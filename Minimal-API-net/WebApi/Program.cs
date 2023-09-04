@@ -2,6 +2,7 @@
 using Domain.Auth.Interfaces.Repository;
 using Infra.Data;
 using Infra.Repository.Auth;
+using Microsoft.AspNetCore.Mvc;
 using WebApi.Applications.Auth;
 using WebApi.Domain.Auth.Interfaces.Service;
 
@@ -16,7 +17,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<AppDbContext>();
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
-
+builder.Services.AddTransient<ITokenService, TokenService>();
 
 var app = builder.Build();
 

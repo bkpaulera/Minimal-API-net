@@ -2,14 +2,11 @@
 
 namespace WebApi.Domain.Auth.Models
 {
-    public class UserEntitie
-    {
-        [Key]
-        public Guid Id { get; set; }
-
-        public string Username { get; set; } = string.Empty;
-
-        public string Password { get; set; } = string.Empty;
-
-    }
+    public record UserEntitie(
+        Guid Id,
+        string Username,
+        string Password ,
+        string Image,
+        string Email 
+    );
 }

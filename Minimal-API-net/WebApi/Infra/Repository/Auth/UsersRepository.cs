@@ -1,17 +1,8 @@
 ﻿using Dapper;
-using Domain.Auth;
 using Domain.Auth.Interfaces.Repository;
 using Infra.Data;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
-using System.Threading.Tasks;
+using WebApi.Domain.Auth.Models;
 
 namespace Infra.Repository.Auth
 {
@@ -32,7 +23,7 @@ namespace Infra.Repository.Auth
                 if (databaseExists == 0)
                 {
                     // Criar o banco de dados usando um script
-                    string createDatabaseScript = "CREATE TABLE[dbo].[USER]([Id] UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,[Username] VARCHAR(50) NOT NULL,[Password] VARCHAR(50) NOT NULL)";
+                    string createDatabaseScript = "CREATE TABLE[dbo].[USER]([Id] UNIQUEIDENTIFIER NOT NULL PRIMARY KEY, [Username] NVARCHAR(50) NULL, [Password] NVARCHAR(50) NULL, [Image] NVARCHAR(100) NULL, [Email] NVARCHAR(MAX) NULL,s)";
 
                     connection.Execute(createDatabaseScript);
                 }
@@ -44,23 +35,27 @@ namespace Infra.Repository.Auth
             EnsureDatabaseExists();
             return _context.CreateConnections();
         }
-        public Users Add(Users users)
+
+        public async Task<bool> Add(UserEntitie users)
         {
             try
             {
-                var query = "INSERT INTO [dbo].[USER] (Id, Username, Password) VALUES (@Id, @Username, @Password)";
+                var query = "INSERT INTO [dbo].[USER] (Id, Username, Password,Image,Email) VALUES (@Id, @Username, @Password,@Image,@Email)";
 
                 using (var connection = GetConnections())
                 {
                     connection.Open();
 
-                    connection.Execute(query, new
+                   var rowsAffected = connection.Execute(query, new
                     {
                         users.Id,
                         users.Username,
-                        users.Password
+                        users.Password,
+                        users.Image,
+                        users.Email,
                     });
-                    return users;
+
+                    return rowsAffected>0;
                 }
             }
             catch (Exception ex)
@@ -69,7 +64,7 @@ namespace Infra.Repository.Auth
             }
         }
 
-        public async Task<IEnumerable<Users>> GetAll()
+        public async Task<IEnumerable<UserEntitie>> GetAll()
         {
             try
             {
@@ -79,7 +74,7 @@ namespace Infra.Repository.Auth
                 {
                     connection.Open();
 
-                    var users = await connection.QueryAsync<Users>(query);
+                    var users = await connection.QueryAsync<UserEntitie>(query);
 
                     return users.ToList();
                 }
@@ -90,7 +85,7 @@ namespace Infra.Repository.Auth
             }
         }
 
-        public async Task<Users> GetUser(string username)
+        public async Task<UserEntitie> GetUser(string username)
         {
             try
             {
@@ -100,7 +95,7 @@ namespace Infra.Repository.Auth
                 {
                     connection.Open();
                     
-                    var users = await connection.QueryAsync<Users>(query , new { username});
+                    var users = await connection.QueryAsync<UserEntitie>(query , new { username});
 
                     if (users == null || !users.Any())
                     {
