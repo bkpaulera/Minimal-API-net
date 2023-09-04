@@ -1,14 +1,8 @@
-﻿using Domain.Auth;
-using Domain.Auth.Interfaces.Repository;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using WebApi.Applications.Auth;
 using WebApi.Domain.Auth.Interfaces.Service;
 using WebApi.Domain.Request;
 using WebApi.Domain.Response;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace WebApi.Controllers.Auth
 {
@@ -40,7 +34,6 @@ namespace WebApi.Controllers.Auth
 
         }
 
-        
         [HttpGet("get-user")]
         public async Task<ActionResult<UserResponse>> GetUser([FromBody] UserRequest request)
         {

@@ -23,7 +23,7 @@ namespace Infra.Repository.Auth
                 if (databaseExists == 0)
                 {
                     // Criar o banco de dados usando um script
-                    string createDatabaseScript = "CREATE TABLE[dbo].[USER]([Id] UNIQUEIDENTIFIER NOT NULL PRIMARY KEY, [Username] NVARCHAR(50) NULL, [Password] NVARCHAR(50) NULL, [Image] NVARCHAR(100) NULL, [Email] NVARCHAR(MAX) NULL,s)";
+                    string createDatabaseScript = "CREATE TABLE [dbo].[USER] ([Id] UNIQUEIDENTIFIER NOT NULL PRIMARY KEY, [Username] NVARCHAR(50) NULL,[Password] NVARCHAR(50) NULL, [Image] NVARCHAR(100) NULL,[Email] NVARCHAR(255) NULL, CONSTRAINT UQ_Id UNIQUE ([Id]),CONSTRAINT UQ_Username UNIQUE ([Username]), CONSTRAINT UQ_Email UNIQUE ([Email]));";
 
                     connection.Execute(createDatabaseScript);
                 }
