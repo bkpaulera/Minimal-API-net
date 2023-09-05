@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using WebApi.Domain.Auth.Interfaces.Service;
+using WebApi.Domain.Auth.Models;
 using WebApi.Domain.Request;
 using WebApi.Domain.Response;
 
@@ -35,6 +37,7 @@ namespace WebApi.Controllers.Auth
         }
 
         [HttpGet("get-user")]
+        [Authorize]
         public async Task<ActionResult<UserResponse>> GetUser([FromBody] UserRequest request)
         {
             try
@@ -46,6 +49,31 @@ namespace WebApi.Controllers.Auth
             catch (Exception ex)
             {
                 return BadRequest("Detalhes: " + ex.Message);
+            }
+        }
+
+        // POST api/<UuserController>
+        [HttpPost("Login-User")]
+        public async Task<ActionResult<UserResponse>> Logins([FromBody] UserRequest request)
+        {
+            try
+            {
+                var result = await _userService.GetUser(request);
+
+                if (result != null)
+                {
+                    // Autenticação bem-sucedida
+                    return Ok(result); // 200 OK
+                }
+                else
+                {
+                    // Credenciais inválidas
+                    return Unauthorized(); // 401 Unauthorized
+                }
+            }
+            catch (Exception ex)
+            {
+                 return StatusCode(500, new { error = "Ocorreu um erro interno no servidor." + ex}); 
             }
         }
 

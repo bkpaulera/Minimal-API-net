@@ -78,6 +78,9 @@ namespace WebApi.Applications.Auth
         {
 
             var user = await _usersRepository.GetUser(request.Username);
+            
+            Users newUser = new Users(Guid.NewGuid(), user.Username, user.Password, user.Image, user.Email, request.Roles);
+            var token = _tokenService.Generate(newUser);
 
             if (request.Password == user.Password)
             {
@@ -89,6 +92,7 @@ namespace WebApi.Applications.Auth
                     Email = user.Email,
                     Image = user.Image,
                     Roles = null,
+                    Message = token
                 };
 
                 return userResponse;

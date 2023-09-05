@@ -13,10 +13,6 @@ namespace WebApi.Applications.Auth
         public string Generate(Users user)
         {
             //Implementar quando ao tentar criar um usario sem espeficiar um Role , colocar uma role defaout
-            if(user.Roles == null) {
-
-                return "Adicione uma Roles";
-            }
 
             var handler = new JwtSecurityTokenHandler();
 
@@ -34,28 +30,21 @@ namespace WebApi.Applications.Auth
             };
 
             var token = handler.CreateToken(tokenDescriptor);
-
+            
             return handler.WriteToken(token);
         }
         private static ClaimsIdentity GenerateClaim(Users user)
         {
-            var claimsIdentity = new ClaimsIdentity();
+            var claims = new List<Claim>();
 
-            claimsIdentity.AddClaim(
-                new Claim(type: ClaimTypes.Name, value: user.Username)
-                );
+            claims.Add(new Claim(type: ClaimTypes.Name, value: user.Username));
 
-            foreach (string role in user.Roles)
+            if(user.Roles != null)
             {
-
-                claimsIdentity.AddClaim(
-                    new Claim(
-                        type: ClaimTypes.Role,
-                        value: role)
-                    );
-
-                claimsIdentity.AddClaim(new Claim(type: "SISTEN", "D&D"));
+                claims.AddRange(user.Roles.Select(role => new Claim(ClaimTypes.Role, role)));
             }
+
+            var claimsIdentity = new ClaimsIdentity(claims, "custom", ClaimTypes.Name, ClaimTypes.Role);
 
             return claimsIdentity;
         }
