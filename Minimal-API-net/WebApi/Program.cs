@@ -24,16 +24,16 @@ builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddTransient<ITokenService, TokenService>();
 builder.Services
-    .AddAuthentication(x =>
+    .AddAuthentication(options =>
     {
-        x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
     })
-    .AddJwtBearer(x =>
+    .AddJwtBearer(jwtOptions =>
     {
-        x.RequireHttpsMetadata = false;
-        x.SaveToken = true;
-        x.TokenValidationParameters = new TokenValidationParameters
+        jwtOptions.RequireHttpsMetadata = false;
+        jwtOptions.SaveToken = true;
+        jwtOptions.TokenValidationParameters = new TokenValidationParameters
         {
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(JwtConfiguration.Key)),
             ValidateIssuer = false,

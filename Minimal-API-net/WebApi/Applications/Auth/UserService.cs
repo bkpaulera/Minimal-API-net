@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Security.Claims;
 using WebApi.Domain.Auth.Interfaces.Service;
 using WebApi.Domain.Auth.Models;
 using WebApi.Domain.Request;
@@ -24,7 +25,10 @@ namespace WebApi.Applications.Auth
 
         public async Task<UserResponse> CreateUser(UserRequest request)
         {
-            // Lógica para criar um usuário, por exemplo
+            
+
+
+            // Lógica para criar um usuário, por exemplo/
             Users newUser = new Users(Guid.NewGuid(), request.Username, request.Password, request.Image,request.Email, request.Roles);
             
             //Entitie será usado para persistir os dados no banco
@@ -52,6 +56,7 @@ namespace WebApi.Applications.Auth
 
         public async Task<ActionResult<IEnumerable<UserResponse>>> GetAll()
         {
+           
             try
             {
                 var repo = await _usersRepository.GetAll();

@@ -21,9 +21,12 @@ namespace WebApi.Controllers.Auth
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        [Authorize]
+        public async Task<IActionResult> GetMe()
         {    
             try{
+                var userName = HttpContext.User.Identity;
+                var Role = HttpContext.User.IsInRole("Role");
 
                 ActionResult<IEnumerable<UserResponse>> result = await _userService.GetAll();
 
@@ -58,6 +61,7 @@ namespace WebApi.Controllers.Auth
         {
             try
             {
+                
                 var result = await _userService.GetUser(request);
 
                 if (result != null)
@@ -79,6 +83,7 @@ namespace WebApi.Controllers.Auth
 
         // POST api/<UuserController>
         [HttpPost("Post-User")]
+        [Authorize]
         public async Task<ActionResult<UserResponse>> PostAsync([FromBody] UserRequest request)
         {
             try
@@ -96,6 +101,7 @@ namespace WebApi.Controllers.Auth
 
         // PUT api/<UuserController>/5
         [HttpPut("Put-User")]
+        [Authorize]
         [ProducesResponseType(typeof(UserResponse), (int)HttpStatusCode.OK)]
         public async Task<ActionResult<UserResponse>> Put(string id, string newpassword, [FromBody] UserRequest request)
         {
@@ -114,6 +120,7 @@ namespace WebApi.Controllers.Auth
 
         // DELETE api/<UuserController>/5
         [HttpDelete("Delete-Uuser")]
+        [Authorize]
         [ProducesResponseType(typeof(UserResponse), (int) HttpStatusCode.OK)]
         public async Task<ActionResult<UserResponse>>  Delete(string id, [FromBody] UserRequest request)
         {
